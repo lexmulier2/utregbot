@@ -1,5 +1,5 @@
 #!/bin/sh
 
-source /root/utregtbot/bin/activate
-cd /root/utregtbot/
+source /root/utregbot/bin/activate
+cd /root/utregbot/
 python main.py
