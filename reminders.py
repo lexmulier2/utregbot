@@ -1,6 +1,7 @@
 import datetime
 import csv
 from os import path
+import re
 
 import dateparser
 
@@ -17,16 +18,17 @@ class Reminders(object):
             self.load_reminders()
 
     def new_reminder(self, bot, update, args):
-        split = ' '.join(args).split('/')
+        current_date = datetime.datetime.now()
+        split = re.split(r'"|“', ' '.join(args))
         reminder_time = dateparser.parse(split[0])
-        if reminder_time:
+        if reminder_time and reminder_time > current_date:
             context = {'message': split[1], 'chat_id': update.message.chat_id}
             self.jobs.run_once(self.reminder_message, reminder_time, context=context)
             self.reminder_to_file(reminder_time, context)
             message = 'Aight. Reminder op: {}'.format(reminder_time.strftime("%Y-%m-%d %H:%M:%S"))
             self.message_chat(bot, update, message)
         else:
-            message = 'Sorry maat dat heb ik niet begrepen. Tijden moeten in het Engels: /remind tijd / bericht'
+            message = 'Sorry! Dat heb ik niet begrepen. Tijden moeten in het Engels: /remind tijd "bericht"'
             self.message_chat(bot, update, message)
 
     def reminder_message(self, bot, job):

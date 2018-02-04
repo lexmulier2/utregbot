@@ -3,10 +3,12 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
+import config
+
 
 class Game(object):
     def __init__(self, team=None):
-        self.url = 'http://www.soccernews.nl/livescore/'
+        self.url = config.URL
 
         self.team = team or 'FC Utrecht'
         self.team_lower = self.team.replace(' ', '_').lower()

@@ -1,6 +1,6 @@
 import datetime
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler
 
 from game import Game
 from reminders import Reminders
@@ -10,7 +10,7 @@ from config import TOKEN, CHAT_ID
 
 class UtregBot(object):
 
-    def __init__(self, chat_id=None, team=None, lang=None):
+    def __init__(self, chat_id=None, team=None):
         self.chat_id = chat_id
         self.team = team
 
@@ -29,6 +29,7 @@ class UtregBot(object):
         self.dp.add_handler(CommandHandler('wakkerworden', self.enable_proactive_messages))
         self.dp.add_handler(CommandHandler('remind', self.reminder, pass_args=True))
         self.dp.add_handler(CommandHandler('uuu', self.uuu))
+        self.dp.add_handler(CommandHandler('opdedom', self.opdedom))
         self.flip_message_handlers()
 
         self.reminders = Reminders(self.jobs, self.message_chat)
@@ -80,6 +81,24 @@ class UtregBot(object):
 
     def uuu(self, bot, update):
         message = 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU'
+        self.message_chat(bot, update, message)
+
+    def opdedom(self, bot, update):
+        message = """
+        .
+        🎼🎵🎶
+        Als ik boven op de dom sta
+        kjik ik even naar benee
+        dan zie ik het ouwe graggie
+        het Vreeburg en Wijk C
+        Ja dan sprink me hartjie ope
+        ik ben trots wat daggie wat
+        er is geen mooier plekkie
+        as Utereg me stad
+        as Utereg me stad
+        🎶🎵🎼
+        
+        """
         self.message_chat(bot, update, message)
 
     @staticmethod

@@ -7,6 +7,7 @@ class FilterSteen(BaseFilter):
 
 filter_steen = FilterSteen()
 
+
 class FilterBeterAls(BaseFilter):
     def filter(self, message):
         return 'beter als' in message.text.lower()
