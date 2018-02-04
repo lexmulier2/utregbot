@@ -79,7 +79,7 @@ class Game(object):
         return None
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game(team='Sparta Rotterdam')
     if game.check_game_today():
         game.get_stats()
         message = game.get_score()
