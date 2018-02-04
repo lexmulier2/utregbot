@@ -65,7 +65,9 @@ class Game(object):
         return None
 
     def goal_for_us(self, goal, time, player):
-        template = 'UUUUUUUU!!!! {} scoort voor {} en de stand is nu {} ({}). UUUUUU!!!'
+        template = """⚽⚽⚽⚽⚽ 
+                    UUUUUUUU!!!! {} scoort voor {} en de stand is nu {} ({}). UUUUUU!!!
+                    ⚽⚽⚽⚽⚽"""
         return template.format(player, self.team, goal, time)
 
     def goal_for_them(self, goal, time, player):

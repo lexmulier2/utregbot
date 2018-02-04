@@ -1,15 +1,17 @@
 import datetime
 
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from game import Game
-
-TOKEN = '520822004:AAFKK9EozBuM-GUHuxhxSV9v5FdLFq-D35E'
+from reminders import Reminders
+import filters
+from config import TOKEN, CHAT_ID
 
 
 class UtregBot(object):
-    def __init__(self, chat_id=None, team=None):
-        self.chat_id = chat_id or '-16383268'
+
+    def __init__(self, chat_id=None, team=None, lang=None):
+        self.chat_id = chat_id
         self.team = team
 
         self.game = None
@@ -19,14 +21,24 @@ class UtregBot(object):
 
         # Jobs handler
         self.jobs = self.updater.job_queue
-        self.jobs.run_daily(self.get_game, datetime.time(hour=16, minute=44))
+        self.jobs.run_daily(self.get_game, datetime.time(hour=9, minute=0))
         self.jobs.run_repeating(self.check_score, interval=30)
 
+        # Other handlers
+        self.dp.add_handler(CommandHandler('houjebek', self.disable_proactive_messages))
+        self.dp.add_handler(CommandHandler('wakkerworden', self.enable_proactive_messages))
+        self.dp.add_handler(CommandHandler('remind', self.reminder, pass_args=True))
         self.dp.add_handler(CommandHandler('uuu', self.uuu))
+        self.flip_message_handlers()
+
+        self.reminders = Reminders(self.jobs, self.message_chat)
 
         self.updater.start_polling()
 
         self.updater.idle()
+
+    def reminder(self, bot, update, args):
+        self.reminders.new_reminder(bot, update, args)
 
     def get_game(self, bot, update):
         self.game = Game(team=self.team)
@@ -43,11 +55,37 @@ class UtregBot(object):
                 if message:
                     bot.send_message(chat_id=self.chat_id, text=message)
 
-    @staticmethod
-    def uuu(bot, update):
-        chat_id = update.message.chat_id
-        bot.send_message(chat_id=chat_id, text='UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU')
+    def disable_proactive_messages(self, bot, update):
+        self.flip_message_handlers(False)
+        self.message_chat(bot, update, 'Oke Oke, Trekvlek. Ik zeg al niks meer en luister alleen naar commando\'s')
 
+    def enable_proactive_messages(self, bot, update):
+        self.flip_message_handlers(True)
+        self.message_chat(bot, update, 'Mogge!')
+
+    def flip_message_handlers(self, enable=True):
+        handler = self.dp.add_handler if enable else self.dp.remove_handler
+        for handle in self.get_message_handlers():
+            handler(handle)
+
+    def get_message_handlers(self):
+        return [MessageHandler(filters.filter_steen, self.message_handler_steen),
+                MessageHandler(filters.filter_beter_als, self.message_handler_beter_als)]
+
+    def message_handler_steen(self, bot, update):
+        self.message_chat(bot, update, 'Fok Steen!')
+
+    def message_handler_beter_als(self, bot, update):
+        self.message_chat(bot, update, 'Nee.... Beter he!')
+
+    def uuu(self, bot, update):
+        message = 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU'
+        self.message_chat(bot, update, message)
+
+    @staticmethod
+    def message_chat(bot, update, message, chat_id=None):
+        chat_id = chat_id or update.message.chat_id
+        bot.send_message(chat_id=chat_id, text=message)
 
 if __name__ == '__main__':
-    UtregBot(team='AFC Ajax')
+    UtregBot(chat_id=CHAT_ID)
