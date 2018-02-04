@@ -13,3 +13,17 @@ class FilterBeterAls(BaseFilter):
         return 'beter als' in message.text.lower()
 
 filter_beter_als = FilterBeterAls()
+
+
+class FilterGateHub(BaseFilter):
+    def filter(self, message):
+        return 'gatehub' in message.text.lower()
+
+filter_gatehub = FilterGateHub()
+
+
+class FilterLangeBroekAan(BaseFilter):
+    def filter(self, message):
+        return 'lange broek' in message.text.lower()
+
+filter_lange_broek_aan = FilterLangeBroekAan()

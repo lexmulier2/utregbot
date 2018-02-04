@@ -71,13 +71,21 @@ class UtregBot(object):
 
     def get_message_handlers(self):
         return [MessageHandler(filters.filter_steen, self.message_handler_steen),
-                MessageHandler(filters.filter_beter_als, self.message_handler_beter_als)]
+                MessageHandler(filters.filter_beter_als, self.message_handler_beter_als),
+                MessageHandler(filters.filter_lange_broek_aan, self.message_handler_lange_broek_aan),
+                MessageHandler(filters.filter_gatehub, self.message_handler_gatehub)]
 
     def message_handler_steen(self, bot, update):
         self.message_chat(bot, update, 'Fok Steen!')
 
     def message_handler_beter_als(self, bot, update):
         self.message_chat(bot, update, 'Nee.... Beter he!')
+
+    def message_handler_lange_broek_aan(self, bot, update):
+        self.message_chat(bot, update, 'Lange broek aan')
+
+    def message_handler_gatehub(self, bot, update):
+        self.message_chat(bot, update, '... Gatehub is kut')
 
     def uuu(self, bot, update):
         message = 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU'
