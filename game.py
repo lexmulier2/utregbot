@@ -21,7 +21,7 @@ class Game(object):
     def check_game_today(self):
         soup = self.get_soup(self.url)
         if soup:
-            for g in soup.find_all('div', class_='livescore livescore--off'):
+            for g in soup.find_all('div', class_='livescore'):
                 if self.team_lower in g.find('a')['href']:
                     self.competition = g.find_previous_sibling('h3').text.split(' - ')[0].strip()
                     self.game_url = self.url + g.find('a')['href']
@@ -52,7 +52,7 @@ class Game(object):
         if soup:
             for event in soup.find_all('div', class_='livescore'):
                 goal = event.find('div', class_='livescore__stand')
-                if len(goal.text) and goal.text not in self.scores:
+                if goal and len(goal.text) and goal.text not in self.scores:
                     self.scores.append(goal.text)
                     time = event.find('div', class_='livescore__position').text.strip()
                     player = event.find('strong')
@@ -62,6 +62,7 @@ class Game(object):
                         return self.goal_for_us(goal.text, time, player_name)
                     else:
                         return self.goal_for_them(goal.text, time, player_name)
+        return None
 
     def goal_for_us(self, goal, time, player):
         template = 'UUUUUUUU!!!! {} scoort voor {} en de stand is nu {} ({}). UUUUUU!!!'
@@ -79,7 +80,8 @@ class Game(object):
         return None
 
 if __name__ == '__main__':
-    game = Game(team='Sparta Rotterdam')
+    game = Game(team='Feyenoord Rotterdam')
     if game.check_game_today():
         game.get_stats()
-        message = game.get_score()
+        print(game.notify_game_today())
+        print(game.get_score())
