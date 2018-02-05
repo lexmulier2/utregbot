@@ -1,11 +1,12 @@
 import datetime
 
-from telegram.ext import Updater, CommandHandler, MessageHandler
+from telegram.ext import Updater, CommandHandler
 
 from game import Game
 from reminders import Reminders
-import filters
+from filters import MessageHandlers
 from config import TOKEN, CHAT_ID
+from utils import message_chat
 
 
 class UtregBot(object):
@@ -25,14 +26,17 @@ class UtregBot(object):
         self.jobs.run_repeating(self.check_score, interval=30)
 
         # Other handlers
-        self.dp.add_handler(CommandHandler('houjebek', self.disable_proactive_messages))
-        self.dp.add_handler(CommandHandler('wakkerworden', self.enable_proactive_messages))
         self.dp.add_handler(CommandHandler('remind', self.reminder, pass_args=True))
         self.dp.add_handler(CommandHandler('uuu', self.uuu))
         self.dp.add_handler(CommandHandler('opdedom', self.opdedom))
-        self.flip_message_handlers()
 
-        self.reminders = Reminders(self.jobs, self.message_chat)
+        # Filters and filter handlers
+        self.filters = MessageHandlers(self.dp)
+        self.dp.add_handler(CommandHandler('filter', self.filters.new_filter, pass_args=True))
+        self.dp.add_handler(CommandHandler('houjebek', self.filters.disable_proactive_messages))
+        self.dp.add_handler(CommandHandler('wakkerworden', self.filters.enable_proactive_messages))
+
+        self.reminders = Reminders(self.jobs)
 
         self.updater.start_polling()
 
@@ -56,42 +60,13 @@ class UtregBot(object):
                 if message:
                     bot.send_message(chat_id=self.chat_id, text=message)
 
-    def disable_proactive_messages(self, bot, update):
-        self.flip_message_handlers(False)
-        self.message_chat(bot, update, 'Oke Oke, Trekvlek. Ik zeg al niks meer en luister alleen naar commando\'s')
-
-    def enable_proactive_messages(self, bot, update):
-        self.flip_message_handlers(True)
-        self.message_chat(bot, update, 'Mogge!')
-
-    def flip_message_handlers(self, enable=True):
-        handler = self.dp.add_handler if enable else self.dp.remove_handler
-        for handle in self.get_message_handlers():
-            handler(handle)
-
-    def get_message_handlers(self):
-        return [MessageHandler(filters.filter_steen, self.message_handler_steen),
-                MessageHandler(filters.filter_beter_als, self.message_handler_beter_als),
-                MessageHandler(filters.filter_lange_broek_aan, self.message_handler_lange_broek_aan),
-                MessageHandler(filters.filter_gatehub, self.message_handler_gatehub)]
-
-    def message_handler_steen(self, bot, update):
-        self.message_chat(bot, update, 'Fok Steen!')
-
-    def message_handler_beter_als(self, bot, update):
-        self.message_chat(bot, update, 'Nee.... Beter he!')
-
-    def message_handler_lange_broek_aan(self, bot, update):
-        self.message_chat(bot, update, 'Lange broek aan')
-
-    def message_handler_gatehub(self, bot, update):
-        self.message_chat(bot, update, '... Gatehub is kut')
-
-    def uuu(self, bot, update):
+    @staticmethod
+    def uuu(bot, update):
         message = 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU'
-        self.message_chat(bot, update, message)
+        message_chat(bot, update, message)
 
-    def opdedom(self, bot, update):
+    @staticmethod
+    def opdedom(bot, update):
         message = """
         .
         🎼🎵🎶
@@ -107,12 +82,7 @@ class UtregBot(object):
         🎶🎵🎼
         
         """
-        self.message_chat(bot, update, message)
-
-    @staticmethod
-    def message_chat(bot, update, message, chat_id=None):
-        chat_id = chat_id or update.message.chat_id
-        bot.send_message(chat_id=chat_id, text=message)
+        message_chat(bot, update, message)
 
 if __name__ == '__main__':
     UtregBot(chat_id=CHAT_ID)
