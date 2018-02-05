@@ -13,7 +13,7 @@ class Reminders(object):
     def __init__(self, jobs):
         self.jobs = jobs
 
-        self.reminder_file = 'reminders.csv'
+        self.reminder_file = 'csv/reminders.csv'
 
         if path.isfile(self.reminder_file):
             self.load_reminders()

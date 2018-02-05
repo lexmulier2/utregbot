@@ -28,7 +28,7 @@ class FilterCallback(object):
 class MessageHandlers(object):
     def __init__(self, dp, filter_file=None):
         self.dp = dp
-        self.filter_file = filter_file or 'filters.csv'
+        self.filter_file = filter_file or 'csv/filters.csv'
         self.active = True
 
         if os.path.isfile(self.filter_file):
