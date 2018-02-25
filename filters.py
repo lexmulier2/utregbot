@@ -48,7 +48,7 @@ class MessageHandlers(object):
             return message_chat(bot, update, error_text)
 
         filter_text = split_args[0].strip()
-        reply = split_args[1].strip().replace('“', '').replace('"')
+        reply = split_args[1].strip().replace('“', '').replace('"', '')
 
         self._add_filter(filter_text, reply)
         self._save_filter(filter_text, reply)
@@ -64,11 +64,9 @@ class MessageHandlers(object):
         if not args:
             return message_chat(bot, update, error_text)
 
-        filter_text = args[0].lower().strip()
-
+        filter_text = ' '.join(args).lower().strip()
         for handler in self.dp.handlers[0]:
-            if handler.filters and handler.filters.filter_text == filter_text:
-
+            if handler.filters and handler.filters.filter_text.lower().strip() == filter_text:
                 self.dp.remove_handler(handler)
                 message_chat(bot, update, 'Removed filter for: {}'.format(handler.filters.filter_text))
 
@@ -89,7 +87,6 @@ class MessageHandlers(object):
         with open(self.filter_file, 'w') as f:
             csv_writer = writer(f)
             for row in all_rows:
-                print(filter_text, row[0])
                 if filter_text != row[0]:
                     csv_writer.writerow(row)
 

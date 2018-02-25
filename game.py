@@ -87,5 +87,3 @@ if __name__ == '__main__':
     game = Game(team='Feyenoord Rotterdam')
     if game.check_game_today():
         game.get_stats()
-        print(game.notify_game_today())
-        print(game.get_score())
