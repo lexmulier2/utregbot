@@ -32,9 +32,11 @@ class UtregBot(object):
 
         # Filters and filter handlers
         self.filters = MessageHandlers(self.dp)
+        self.dp.add_handler(CommandHandler('remove', self.filters.remove, pass_args=True))
         self.dp.add_handler(CommandHandler('filter', self.filters.new_filter, pass_args=True))
         self.dp.add_handler(CommandHandler('houjebek', self.filters.disable_proactive_messages))
         self.dp.add_handler(CommandHandler('wakkerworden', self.filters.enable_proactive_messages))
+        self.filters.load_filters()
 
         self.reminders = Reminders(self.jobs)
 
