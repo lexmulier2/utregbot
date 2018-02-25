@@ -55,7 +55,7 @@ class UtregBot(object):
             bot.send_message(chat_id=self.chat_id, text=message)
 
     def check_score(self, bot, update):
-        if self.game:
+        if self.game and self.game.time:
             current_time = datetime.datetime.now()
             if self.game.time < current_time < self.game.time + datetime.timedelta(hours=3):
                 message = self.game.get_score()
