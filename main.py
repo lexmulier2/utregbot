@@ -71,7 +71,6 @@ class UtregBot(object):
     def opdedom(bot, update):
         message = """
         .
-        🎼🎵🎶
         Als ik boven op de dom sta
         kjik ik even naar benee
         dan zie ik het ouwe graggie
@@ -81,8 +80,7 @@ class UtregBot(object):
         er is geen mooier plekkie
         as Utereg me stad
         as Utereg me stad
-        🎶🎵🎼
-        
+
         """
         message_chat(bot, update, message)
 
