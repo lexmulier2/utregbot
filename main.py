@@ -22,8 +22,8 @@ class UtregBot(object):
 
         # Jobs handler
         self.jobs = self.updater.job_queue
-        self.jobs.run_daily(self.get_game, datetime.time(hour=9, minute=0))
-        self.jobs.run_repeating(self.check_score, interval=30)
+        #self.jobs.run_daily(self.get_game, datetime.time(hour=9, minute=0))
+        s#elf.jobs.run_repeating(self.check_score, interval=30)
 
         # Other handlers
         self.dp.add_handler(CommandHandler('remind', self.reminder, pass_args=True))
